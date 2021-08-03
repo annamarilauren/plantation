@@ -55,7 +55,7 @@ class cPlantationSimulator():
             DESCRIPTION Carbon balance for the run
         """
         #************Read parametrs and create parameters instance*******************
-        p=para.cParameters(pfile=r'C:/Users/alauren/OneDrive - University of Eastern Finland/codes/plantation_simulator/ps_params.xlsx') 
+        p=para.cParameters(pfile=self.parafile') 
         nsteps =  int((p.Gen['Lrotat'][0]*12 / p.Gen['dt'][0] +1) *p.Gen['Nrotat'][0])   #  numbre of time steps in the simulation
         
         #***********Overwrite parameters if given in function call, can be disabled ***********************************************    
