@@ -746,14 +746,16 @@ class DecomPeat():
     
         
     """
-    def __init__(self, length, dt, gwl=80.0, dwtAmp = 8.0, dwtArr=np.empty):
+    def __init__(self, length, dt, gwl=80.0, dwtAmp = 8.0, dwtArr=np.empty, peatdatafile=None):
         #------generate DWT dynamics, monthly mean values, fit sine curve
         self.time = np.arange(0, length, step = dt); self.dt = dt; self.length = length
         self.gwl = gwl
         self.dwtAmp = dwtAmp
+        self.peatdatafile = peatdatafile
         if dwtArr is not np.empty:
             self.dwt=dwtArr
-            
+        
+        
     def decomposePeat(self, dpara, gy, de, ro, optH = True, optSine = True, optCWD = False):
         if optSine == True:        
             fre = 0.5; amp = self.dwtAmp; pha = 0.29; offs=self.gwl             # DWT to offset, amplitude dwt fluctuation
@@ -781,9 +783,10 @@ class DecomPeat():
         optShrink = True
         if optShrink==True:        
             from hydro_utils import getParams, wrc
-            paramFile=r"C:/Users/alauren/OneDrive - University of Eastern Finland/codes/plantation_simulator/peat_data.xlsx"        
+            #paramFile=r"C:/Users/alauren/OneDrive - University of Eastern Finland/codes/plantation_simulator/peat_data.xlsx"        
+            #paramFile = self.peatdatafile
             peatset=['mesic', 'fibric', 'TPmean', 'TPQ1', 'TPQ3', 'woody']        
-            soilpara = getParams(paramFile, shname = peatset[2], lrs=176)                                         # soil layer hydraulic parameters 
+            soilpara = getParams(self.peatdatafile, shname = peatset[2], lrs=176)                                         # soil layer hydraulic parameters 
             pF=soilpara['pF']        
             nlyrs = 30        
             dz =np.array(list(pF['dz'].values()))
@@ -875,12 +878,13 @@ class DecomPeat():
         if optH == True:        
             # Hoojier 2010:
             CO2efflux = (91.0*self.dwt/100.0*1000.0*pdt)*a_q10                  # kg CO2 /ha/timestep 
-            print ('Hoojier')
+            print ('Hoojier 2010')
         else:
             # Jauhiainen 2012:
             #self.dwt=np.append(self.dwt,np.mean(self.dwt))   # TEMP!!!!!! REMOVE THIS
             CO2efflux = ((71.1*self.dwt/100.0 + 23.15)*1000.0*pdt)*a_q10
-            print ('Jauhis')
+            print ('Jauhiainen 2012')
+
         #------Divide mass loss between peat, cwd and stand litter --------
         cwdMloss = de.cwdMloss*-1.0                                             # kg / ha / timestep
         romulMloss = ro.miner*10000.0                                           # kg / ha / timestep

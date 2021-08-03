@@ -200,31 +200,39 @@ def fDrawGrowth(gy):
 
 def fDrawMAICAI(gy):
     params = {'mathtext.default': 'regular' }          
+    fs = 14
     plt.rcParams.update(params)    
     dt = gy.g['dt'][0]; dty = dt/12.0
     time = np.arange(0, len(gy.Hdom))*dty
     fig= plt.figure(num = 'Plantation simulator, MAI and CAI', facecolor=fcol, edgecolor='k',figsize=(15.,6.))   #Figsize(w,h), tuple inches 
-    ax1 = fig.add_axes([0.1, 0.1, 0.35, 0.7]) #left, bottom, width, height
+    ax1 = fig.add_axes([0.1, 0.15, 0.35, 0.7]) #left, bottom, width, height
     ax1.set_title('Stand characteristics')    
-    ax1.set_xlabel('Age, yrs', fontsize = 14)
+    ax1.set_xlabel('Age, years', fontsize = fs)
     ax1.plot(time, gy.Hdom, 'r-', label='$H_{dom}$, m')
     ax1.plot(time, gy.BA, 'b-', label='BA, $m^{2}$')
     ax1.plot(time, gy.WMeanDiam, 'c-', label='$\overline{dbh}$, cm')
-    ax1.legend(loc='upper left')
+    ax1.legend(loc='upper left', fontsize=fs)
+    plt.xticks(fontsize=fs)
+    plt.yticks(fontsize=fs)
+
     ax11=ax1.twinx()
     ax11.plot(time, gy.Survival, 'g-', label='Stocking')
-    ax11.legend(loc='lower right')
+    ax11.legend(loc='lower right', fontsize=fs)
     ax11.set_ylim(0,max(gy.Survival)*1.2)
+    plt.xticks(fontsize=fs)
+    plt.yticks(fontsize=fs)
  
     ul = int(gy.g['DiamUpperLimit'][0]); nsteps = len(gy.age)  
     Vdist = np.reshape(gy.Vdist, (nsteps, ul)) #; MercDist = np.reshape(gy.MercDist, (nsteps, ul))
     volume = np.sum(Vdist, axis=1)
-    ax3 = fig.add_axes([0.55, 0.1, 0.35, 0.7]) #left, bottom, width, height
-    ax3.set_xlabel('Age, yrs', fontsize=14)
-    ax3.set_ylabel('Volume increment, $m^{3}$ $ha^{-1}$ $yr^{-1}$')
+    ax3 = fig.add_axes([0.55, 0.15, 0.35, 0.7]) #left, bottom, width, height
+    ax3.set_xlabel('Age, years', fontsize=fs)
+    ax3.set_ylabel('Volume increment, $m^{3}$ $ha^{-1}$ $yr^{-1}$', fontsize=fs)
     ax3.plot(time,np.gradient(volume)*12. , 'r-', label='CAI')
     ax3.plot(time[1:], volume[1:]/time[1:] , 'b-', label='MAI')
-    ax3.legend(loc='upper left')
+    ax3.legend(loc='upper left', fontsize=fs)
+    plt.xticks(fontsize=fs)
+    plt.yticks(fontsize=fs)
     
    
 
@@ -971,7 +979,7 @@ def fDrawNutrient(n, gy, de):
     ax2.plot(time, yy , 'c-', label='Foliage')
     ax2.fill_between(time,y,yy,facecolor='cyan', alpha=0.3)
     y = yy + n.weedAboveSto
-    print (n.weedAboveSto)
+    
     ax2.plot(time, y, 'y-', label = 'Weed')
     ax2.fill_between(time, yy, y, facecolor = 'yellow', alpha=0.3)
     y = n.rootSto*-1.0
